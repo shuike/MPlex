@@ -1,0 +1,34 @@
+{
+  "ratingKey": "781",
+  "key": "/library/metadata/781/children",
+  "parentRatingKey": "780",
+  "guid": "plex://season/602e626fc96042002d07b09e",
+  "parentGuid": "plex://show/5d9c08382192ba001f30a9c7",
+  "parentStudio": "Williams Street",
+  "type": "season",
+  "title": "季 1",
+  "parentKey": "/library/metadata/780",
+  "librarySectionTitle": "电视节目",
+  "librarySectionID": 2,
+  "librarySectionKey": "/library/sections/2",
+  "parentTitle": "瑞克和莫蒂",
+  "index": 1,
+  "parentIndex": 1,
+  "parentYear": 2013,
+  "thumb": "/library/metadata/781/thumb/1681973931",
+  "art": "/library/metadata/780/art/1681973929",
+  "parentThumb": "/library/metadata/780/thumb/1681973929",
+  "parentTheme": "/library/metadata/780/theme/1681973929",
+  "leafCount": 3,
+  "viewedLeafCount": 0,
+  "addedAt": 1681977353,
+  "updatedAt": 1681973931,
+  "Guid": [
+    {
+      "id": "tmdb://60059"
+    },
+    {
+      "id": "tvdb://567215"
+    }
+  ]
+}

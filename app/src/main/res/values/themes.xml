@@ -1,0 +1,52 @@
+<resources>
+
+    <style name="Base.Theme.MPlex" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorSurface">@color/window_background</item>
+        <item name="colorPrimary">#FF9800</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="Theme.MPlex" parent="Base.Theme.MPlex">
+
+    </style>
+
+    <style name="ExoStyledControls.Button.Center">
+        <item name="android:layout_width">@dimen/exo_icon_size</item>
+        <item name="android:layout_height">@dimen/exo_icon_size</item>
+        <item name="android:background">@drawable/controls_button_bg</item>
+    </style>
+
+    <style name="ExoStyledControls.Button.Center.FfwdWithAmount">
+        <item name="android:foreground">@drawable/exo_styled_controls_fastforward</item>
+        <item name="android:gravity">center|bottom</item>
+        <item name="android:paddingBottom">@dimen/exo_icon_padding_bottom</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/exo_icon_text_size</item>
+        <item name="android:textColor">@color/exo_white</item>
+
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="ExoStyledControls.Button.Center.RewWithAmount">
+        <item name="android:foreground">@drawable/exo_styled_controls_rewind</item>
+        <item name="android:gravity">center|bottom</item>
+        <item name="android:paddingBottom">@dimen/exo_icon_padding_bottom</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/exo_icon_text_size</item>
+        <item name="android:textColor">@color/exo_white</item>
+
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="ExoStyledControls.Button">
+        <item name="android:background">@drawable/controls_button_bg</item>
+        <!--        <item name="android:foreground">?attr/selectableItemBackground</item>-->
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_marginLeft">@dimen/exo_icon_horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/exo_icon_horizontal_margin</item>
+    </style>
+</resources>

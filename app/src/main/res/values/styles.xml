@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FocusedTextButton">
+        <attr name="tint" format="color" />
+        <attr name="focusedTint" format="color" />
+        <attr name="srcCompat" format="reference" />
+        <attr name="text" format="string" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,244 @@
+{
+  "ratingKey": "807",
+  "key": "/library/metadata/807",
+  "parentRatingKey": "806",
+  "grandparentRatingKey": "805",
+  "guid": "plex://episode/5d9c1004705e7a001e73f2e7",
+  "parentGuid": "plex://season/602e626fc96042002d07b09e",
+  "grandparentGuid": "plex://show/5d9c08382192ba001f30a9c7",
+  "type": "episode",
+  "title": "聪明狗狗",
+  "grandparentKey": "/library/metadata/805",
+  "parentKey": "/library/metadata/806",
+  "librarySectionTitle": "电视节目",
+  "librarySectionID": 2,
+  "librarySectionKey": "/library/sections/2",
+  "grandparentTitle": "瑞克和莫蒂",
+  "parentTitle": "季 1",
+  "originalTitle": "Rick and Morty",
+  "contentRating": "TV-MA",
+  "index": 2,
+  "parentIndex": 1,
+  "audienceRating": 8.1,
+  "year": 2013,
+  "thumb": "/library/metadata/807/thumb/1681978052",
+  "art": "/library/metadata/805/art/1681978052",
+  "parentThumb": "/library/metadata/806/thumb/1681978052",
+  "grandparentThumb": "/library/metadata/805/thumb/1681978052",
+  "grandparentArt": "/library/metadata/805/art/1681978052",
+  "grandparentTheme": "/library/metadata/805/theme/1681978052",
+  "duration": 1348613,
+  "originallyAvailableAt": "2013-12-09",
+  "addedAt": 1681978051,
+  "updatedAt": 1681978052,
+  "audienceRatingImage": "themoviedb://image.rating",
+  "Media": [
+    {
+      "id": 821,
+      "duration": 1348613,
+      "bitrate": 686,
+      "width": 640,
+      "height": 480,
+      "aspectRatio": 1.33,
+      "audioChannels": 2,
+      "audioCodec": "aac",
+      "videoCodec": "h264",
+      "videoResolution": "480",
+      "container": "mp4",
+      "videoFrameRate": "PAL",
+      "optimizedForStreaming": 1,
+      "audioProfile": "lc",
+      "has64bitOffsets": false,
+      "videoProfile": "high",
+      "Part": [
+        {
+          "id": 821,
+          "key": "/library/parts/821/1681753571/file.mp4",
+          "duration": 1348613,
+          "file": "/Users/shuike/投影仪共享/影院/Rick and Morty (2013)/Season 01/S01E02.mp4",
+          "size": 115569845,
+          "audioProfile": "lc",
+          "container": "mp4",
+          "has64bitOffsets": false,
+          "optimizedForStreaming": true,
+          "videoProfile": "high",
+          "Stream": [
+            {
+              "id": 1655,
+              "streamType": 1,
+              "default": true,
+              "codec": "h264",
+              "index": 0,
+              "bitrate": 554,
+              "bitDepth": 8,
+              "chromaLocation": "left",
+              "chromaSubsampling": "4:2:0",
+              "codedHeight": 480,
+              "codedWidth": 640,
+              "frameRate": 24.918,
+              "hasScalingMatrix": false,
+              "height": 480,
+              "level": 30,
+              "profile": "high",
+              "refFrames": 4,
+              "scanType": "progressive",
+              "streamIdentifier": "1",
+              "width": 640,
+              "displayTitle": "480p (H.264)",
+              "extendedDisplayTitle": "480p (H.264)"
+            },
+            {
+              "id": 1656,
+              "streamType": 2,
+              "selected": true,
+              "default": true,
+              "codec": "aac",
+              "index": 1,
+              "channels": 2,
+              "bitrate": 128,
+              "profile": "lc",
+              "samplingRate": 44100,
+              "streamIdentifier": "2",
+              "displayTitle": "未知 (AAC Stereo)",
+              "extendedDisplayTitle": "未知 (AAC Stereo)"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "Director": [
+    {
+      "id": 2182,
+      "filter": "director=2182",
+      "tag": "John Rice"
+    }
+  ],
+  "Writer": [
+    {
+      "id": 2183,
+      "filter": "writer=2183",
+      "tag": "Ryan Ridley"
+    }
+  ],
+  "Producer": [
+    {
+      "id": 2184,
+      "filter": "producer=2184",
+      "tag": "Ryan Ridley"
+    },
+    {
+      "id": 2185,
+      "filter": "producer=2185",
+      "tag": "Christi Webb"
+    },
+    {
+      "id": 2186,
+      "filter": "producer=2186",
+      "tag": "Robert McGee"
+    },
+    {
+      "id": 2187,
+      "filter": "producer=2187",
+      "tag": "Ruth Lambert"
+    }
+  ],
+  "Guid": [
+    {
+      "id": "imdb://tt3333824"
+    },
+    {
+      "id": "tmdb://973401"
+    },
+    {
+      "id": "tvdb://4725805"
+    }
+  ],
+  "Rating": [
+    {
+      "image": "themoviedb://image.rating",
+      "value": 8.1,
+      "type": "audience"
+    }
+  ],
+  "Role": [
+    {
+      "id": 2052,
+      "filter": "actor=2052",
+      "tag": "Rob Paulsen",
+      "tagKey": "5d77683454f42c001f8c427d",
+      "role": "Snuffles / Centaur / Dog Soldier 1 (voice)",
+      "thumb": "https://metadata-static.plex.tv/2/people/21a8f104941edbbb45d993c654ac618a.jpg"
+    },
+    {
+      "id": 2058,
+      "filter": "actor=2058",
+      "tag": "Jess Harnell",
+      "tagKey": "5d77682985719b001f3a1318",
+      "role": "Scary Terry / Dog Soldier 2  (voice)",
+      "thumb": "https://metadata-static.plex.tv/people/5d77682985719b001f3a1318.jpg"
+    },
+    {
+      "id": 2066,
+      "filter": "actor=2066",
+      "tag": "Melique Berger",
+      "tagKey": "5d77686161141d001fb19ac7",
+      "role": "Mrs. Pancakes / Scary Melissa / Anchorwoman  (voice)"
+    },
+    {
+      "id": 192,
+      "filter": "actor=192",
+      "tag": "Maurice LaMarche",
+      "tagKey": "5d776827880197001ec90a8a",
+      "role": "Scary Teacher / Dog Accountant  (voice)",
+      "thumb": "https://metadata-static.plex.tv/people/5d776827880197001ec90a8a.jpg"
+    },
+    {
+      "id": 2041,
+      "filter": "actor=2041",
+      "tag": "Justin Roiland",
+      "tagKey": "5d776a3447dd6e001f6cfd4d",
+      "role": "Dream Aliens (voice)",
+      "thumb": "https://metadata-static.plex.tv/a/people/af4c83335d57bcf3266a1e585833a3d4.jpg"
+    },
+    {
+      "id": 2042,
+      "filter": "actor=2042",
+      "tag": "Spencer Grammer",
+      "tagKey": "5d776842880197001ec95ed7",
+      "role": "Dream Summer (voice)",
+      "thumb": "https://metadata-static.plex.tv/people/5d776842880197001ec95ed7.jpg"
+    },
+    {
+      "id": 2049,
+      "filter": "actor=2049",
+      "tag": "Phil Hendrie",
+      "tagKey": "5d77682ee6d55c002040bce4",
+      "role": "Scary Glenn (voice)",
+      "thumb": "https://metadata-static.plex.tv/people/5d77682ee6d55c002040bce4.jpg"
+    },
+    {
+      "id": 2046,
+      "filter": "actor=2046",
+      "tag": "Brandon Johnson",
+      "tagKey": "5d77685c7228e5001f1e303d",
+      "role": "Mr. Goldenfold / Handsome Black Man (voice)",
+      "thumb": "https://metadata-static.plex.tv/people/5d77685c7228e5001f1e303d.jpg"
+    },
+    {
+      "id": 2101,
+      "filter": "actor=2101",
+      "tag": "A. Smith Harrison",
+      "tagKey": "6323b386a45752410e724dd8",
+      "role": "Narrator (voice)",
+      "thumb": "https://metadata-static.plex.tv/c/people/c80978f6bdc073d880f84b945954d4a5.jpg"
+    },
+    {
+      "id": 2102,
+      "filter": "actor=2102",
+      "tag": "Jesse Mendel",
+      "tagKey": "5ea4eb011926b000393fab1d",
+      "role": "Additional Voices (voice)"
+    }
+  ]
+}
