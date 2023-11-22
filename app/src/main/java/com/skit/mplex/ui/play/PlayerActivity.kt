@@ -43,6 +43,8 @@ import androidx.media3.ui.R
 import com.skit.mplex.MTrackNameProvider
 import com.skit.mplex.databinding.ActivityPlayerBinding
 import com.skit.mplex.ktx.launch
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 
 @UnstableApi
@@ -103,12 +105,58 @@ class PlayerActivity : AppCompatActivity() {
         val declaredField = javaClass.getDeclaredField("trackNameProvider")
         declaredField.isAccessible = true
         declaredField.set(controlView, MTrackNameProvider())
+
+        mBinding.root.setOnTouchListener { v, event ->
+
+            return@setOnTouchListener true
+        }
 //        val javaClass = styledPlayerControlView.javaClass
 //        val settingsWindowField = javaClass.getDeclaredField("settingsWindow")
 //        settingsWindowField.isAccessible = true
 //        val fieldClass = settingsWindowField
 //        val declaredMethod = fieldClass.getDeclaredMethod("setFocusable", Boolean::class.java)
 //        declaredMethod.invoke(settingsWindowField, false)
+        mBinding.playerParent.apply {
+            bindWindow(window)
+            seekCallback = { second ->
+                player?.let {
+                    player?.seekTo(it.currentPosition + (second * 1000))
+                }
+            }
+            textStrCallback = { isLeft, second ->
+                val text = player?.let { exoPlayer ->
+                    val endSecond = exoPlayer.currentPosition + (second * 1000)
+                    when {
+                        endSecond >= exoPlayer.duration -> {
+                            exoPlayer.duration.toDurationText()
+                        }
+
+                        endSecond <= 0 -> {
+                            ""
+                        }
+
+                        else -> {
+                            endSecond.toDurationText()
+                        }
+                    }
+                } ?: ""
+                text.ifEmpty { "00:00:00" }
+            }
+        }
+    }
+
+    private fun Long.toDurationText(): String {
+        val duration = toDuration(DurationUnit.MILLISECONDS)
+        val hours = duration.inWholeHours
+        var minutes = duration.inWholeMinutes
+        var second = duration.inWholeSeconds
+        if (hours > 0) {
+            minutes -= hours * 60
+        }
+        if (minutes > 0) {
+            second -= minutes * 60
+        }
+        return "%02d:%02d:%02d".format(hours, minutes, second)
     }
 
     override fun onResume() {
@@ -195,6 +243,17 @@ class PlayerActivity : AppCompatActivity() {
                 exoPlayer.prepare()
                 exoPlayer.playWhenReady = true
                 exoPlayer.addListener(object : Player.Listener {
+                    override fun onPlaybackStateChanged(playbackState: Int) {
+                        super.onPlaybackStateChanged(playbackState)
+                        if (playbackState == ExoPlayer.STATE_READY) {
+                            mBinding.playerParent.setDuration(exoPlayer.duration)
+                        }
+                    }
+
+                    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                        super.onPlayWhenReadyChanged(playWhenReady, reason)
+                    }
+
                     override fun onTracksChanged(tracks: Tracks) {
                         super.onTracksChanged(tracks)
                         val trackGroups = tracks.groups

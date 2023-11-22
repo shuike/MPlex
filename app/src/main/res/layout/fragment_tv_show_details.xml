@@ -104,7 +104,8 @@
                             android:id="@+id/rating"
                             style="@style/Widget.AppCompat.RatingBar.Small"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:secondaryProgressTint="#00000000" />
 
                     </LinearLayout>
 

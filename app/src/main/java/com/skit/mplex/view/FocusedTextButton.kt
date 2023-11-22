@@ -55,18 +55,10 @@ class FocusedTextButton @JvmOverloads constructor(
         Log.d("TAG", "onFocusChanged: ${gainFocus}")
         if (gainFocus) {
             binding.text.isVisible = true
-//            val mutate = binding.icon.drawable.mutate().apply {
-//                setTint(focusedTintColor)
-//            }
             binding.icon.imageTintList = ColorStateList.valueOf(focusedTintColor)
-//            binding.icon.setImageDrawable(mutate)
         } else {
             binding.text.isGone = true
-//            val mutate = binding.icon.drawable.mutate().apply {
-//                setTint(tintColor)
-//            }
             binding.icon.imageTintList = ColorStateList.valueOf(tintColor)
-//            binding.icon.setImageDrawable(mutate)
         }
     }
 }

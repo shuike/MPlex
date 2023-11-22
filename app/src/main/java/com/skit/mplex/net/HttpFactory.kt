@@ -36,7 +36,7 @@ object HttpFactory {
                         "X-Plex-Client-Identifier",
                         UUIDManager.UUID.substring(0, 24)
                     )
-                    .addHeader("X-Plex-Platform", "Android")
+                    .addHeader("X-Plex-Platadform", "Android")
                     .addHeader("X-Plex-Platform-Version", Build.VERSION.SDK_INT.toString())
                     .addHeader("X-Plex-Device", Build.DEVICE)
                     .addHeader("X-Plex-Language", Locale.getDefault().language)

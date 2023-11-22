@@ -32,7 +32,7 @@ fun ImageView.loadPlexImg(path: String, placeHolder: Any? = null) {
     }
 }
 
-fun ImageView.loadPlexImgBlur(path: String) {
+fun ImageView.loadPlexImgBlur(path: String, radius: Int = 10) {
     val imageView = this
     load(
         path.plexUrl(),
@@ -50,18 +50,18 @@ fun ImageView.loadPlexImgBlur(path: String) {
                     (drawable as? Animatable)?.start()
                 }
             })
-            val radius = 10
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                setRenderEffect(
-                    RenderEffect.createBlurEffect(
-                        radius.toFloat(),
-                        radius.toFloat(),
-                        Shader.TileMode.CLAMP
-                    )
-                )
-            } else {
-                transformations(BlurTransformation(context, radius))
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//                setRenderEffect(
+//                    RenderEffect.createBlurEffect(
+//                        radius.toFloat(),
+//                        radius.toFloat(),
+//                        Shader.TileMode.CLAMP
+//                    )
+//                )
+//            } else {
+//                transformations(BlurTransformation(context, radius))
+//            }
+            transformations(BlurTransformation(context, radius))
         }
     )
 }

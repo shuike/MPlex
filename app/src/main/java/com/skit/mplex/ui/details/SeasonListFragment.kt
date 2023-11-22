@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
+import androidx.palette.graphics.Palette
 import com.google.android.material.tabs.TabLayout
 import com.skit.mplex.R
 import com.skit.mplex.base.BaseFragment
@@ -30,6 +31,7 @@ class SeasonListFragment : BaseFragment<FragmentSeasonListBinding>() {
     }
 
     var selectCallback: (String) -> Unit = {}
+    var itemClick: (String) -> Unit = {}
     private lateinit var seasonListAdapter: SeasonListAdapter
     private val mList = ArrayList<TvShowSeasonChildrenResponse.MediaContainer.Metadata>()
     private val id: String by lazy { arguments?.getString("id") ?: error("error") }
@@ -37,7 +39,10 @@ class SeasonListFragment : BaseFragment<FragmentSeasonListBinding>() {
         mBinding.recyclerView.apply {
             adapter = SeasonListAdapter(mList).also {
                 it.selectCallback = {
-                    selectCallback(it)
+                    selectCallback(it.ratingKey)
+                }
+                it.itemClick = {
+                    itemClick(it.ratingKey)
                 }
                 seasonListAdapter = it
             }
@@ -112,4 +117,8 @@ class SeasonListFragment : BaseFragment<FragmentSeasonListBinding>() {
         container: ViewGroup?,
     ): FragmentSeasonListBinding =
         FragmentSeasonListBinding.inflate(inflater, container, false)
+
+    fun setTextColor(color: Int) {
+        seasonListAdapter.setTextColor(color)
+    }
 }

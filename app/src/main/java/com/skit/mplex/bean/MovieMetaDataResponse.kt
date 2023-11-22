@@ -38,7 +38,7 @@ data class MovieMetaDataResponse(
             @SerializedName("addedAt")
             val addedAt: Long, // 1682920001
             @SerializedName("art")
-            val art: String, // /library/metadata/1348/art/1682964303
+            val art: String?, // /library/metadata/1348/art/1682964303
             @SerializedName("audienceRating")
             val audienceRating: Double, // 8.3
             @SerializedName("audienceRatingImage")

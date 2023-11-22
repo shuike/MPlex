@@ -92,7 +92,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private fun loadArtImage(artPath: String) {
         mBinding.ivBg.apply {
             if (tag != artPath) {
-                loadPlexImgBlur(artPath)
+                loadPlexImgBlur(artPath, 25)
                 tag = artPath
             }
         }

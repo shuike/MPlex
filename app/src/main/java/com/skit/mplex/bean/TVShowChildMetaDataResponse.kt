@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 
- @Keep
+@Keep
 data class TVShowChildMetaDataResponse(
     @SerializedName("MediaContainer")
     val mediaContainer: MediaContainer
@@ -38,7 +38,7 @@ data class TVShowChildMetaDataResponse(
             @SerializedName("addedAt")
             val addedAt: Long, // 1682919926
             @SerializedName("art")
-            val art: String, // /library/metadata/1312/art/1683140399
+            val art: String?, // /library/metadata/1312/art/1683140399
             @SerializedName("audienceRating")
             val audienceRating: Double, // 6.8
             @SerializedName("audienceRatingImage")

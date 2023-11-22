@@ -12,12 +12,11 @@ object UUIDManager {
                 MPlexApp.application.getSharedPreferences("preferences", Context.MODE_PRIVATE)
             val uuid = sharedPreferences.getString("uuid", null)
             return if (uuid.isNullOrEmpty()) {
-                val uuid = java.util.UUID.randomUUID().toString().replace("-", "")
-                _uuid = uuid
-                sharedPreferences.edit {
+                _uuid = java.util.UUID.randomUUID().toString().replace("-", "")
+                sharedPreferences.edit(true) {
                     putString("uuid", _uuid)
                 }
-                uuid
+                _uuid
             } else {
                 _uuid = uuid
                 uuid

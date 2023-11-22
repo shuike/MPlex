@@ -2,6 +2,8 @@ package com.skit.mplex.ktx
 
 import android.content.res.Resources
 import android.util.TypedValue
+import androidx.core.graphics.ColorUtils
+import kotlin.math.roundToInt
 
 
 val Float.dp
@@ -24,3 +26,10 @@ val Int.sp
         this.toFloat(),
         Resources.getSystem().displayMetrics
     ).toInt()
+
+fun Int.toAlphaColor(alpha: Float): Int {
+    return ColorUtils.setAlphaComponent(
+        this,
+        (255 * alpha).roundToInt()
+    )
+}

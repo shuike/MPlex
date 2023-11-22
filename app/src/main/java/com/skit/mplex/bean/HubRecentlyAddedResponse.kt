@@ -50,7 +50,7 @@ data class HubRecentlyAddedResponse(
                 @SerializedName("addedAt")
                 val addedAt: Long, // 1681973924
                 @SerializedName("art")
-                val art: String, // /library/metadata/780/art/1681973929
+                val art: String?, // /library/metadata/780/art/1681973929
                 @SerializedName("audienceRating")
                 val audienceRating: Double, // 8.1
                 @SerializedName("audienceRatingImage")

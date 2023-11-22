@@ -34,7 +34,7 @@ data class RecentlyAddedResponse(
             @SerializedName("allowSync")
             val allowSync: Boolean, // true
             @SerializedName("art")
-            val art: String, // /library/metadata/805/art/1681978052
+            val art: String?, // /library/metadata/805/art/1681978052
             @SerializedName("audienceRating")
             val audienceRating: Double, // 9.2
             @SerializedName("audienceRatingImage")

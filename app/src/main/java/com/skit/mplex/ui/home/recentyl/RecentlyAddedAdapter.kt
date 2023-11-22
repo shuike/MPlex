@@ -92,9 +92,10 @@ class RecentlyAddedAdapter(private val list: List<RecentlyAddedResponse.MediaCon
                 }
             }
             ivImg.loadPlexImg(thumb_url)
+            val art = directory.art ?: ""
             cardView.setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
-                    focusedCallback(directory.art.ifEmpty { thumb_url })
+                    focusedCallback(art.ifEmpty { thumb_url })
                 }
             }
         }
