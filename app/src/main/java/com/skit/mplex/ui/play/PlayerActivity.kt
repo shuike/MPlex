@@ -2,7 +2,6 @@ package com.skit.mplex.ui.play
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -16,14 +15,12 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaItem.fromUri
 import androidx.media3.common.Player
-import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlaybackException
@@ -32,18 +29,22 @@ import androidx.media3.exoplayer.Renderer
 import androidx.media3.exoplayer.audio.AudioRendererEventListener
 import androidx.media3.exoplayer.audio.AudioSink
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.exoplayer.source.SingleSampleMediaSource
+import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.exoplayer.trackselection.TrackSelector
+import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import androidx.media3.ui.PlayerControlView
 import androidx.media3.ui.R
 import com.skit.mplex.MTrackNameProvider
 import com.skit.mplex.databinding.ActivityPlayerBinding
 import com.skit.mplex.ktx.launch
+import com.skit.mplex.net.HttpFactory
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
-
 
 @UnstableApi
 class PlayerActivity : AppCompatActivity() {
@@ -194,7 +195,19 @@ class PlayerActivity : AppCompatActivity() {
     @OptIn(UnstableApi::class)
     private fun initializePlayer() {
         Log.d(TAG, "initializePlayer: ${path}")
-        player = ExoPlayer.Builder(this, mRenderFactory)
+        val httpDataSource = httpDataSource(this).apply {
+            setRequestProperty("X-Plex-Token", HttpFactory.PLEX_TOKEN)
+        }
+        val dataSourceFactory = DataSource.Factory { httpDataSource }
+
+        val trackSelector: TrackSelector =
+            DefaultTrackSelector(this, AdaptiveTrackSelection.Factory())
+        player = ExoPlayer.Builder(this)
+            .setRenderersFactory(mRenderFactory)
+            .setMediaSourceFactory(
+                DefaultMediaSourceFactory(this).setDataSourceFactory(dataSourceFactory)
+            )
+            .setTrackSelector(trackSelector)
             .build()
             .also { exoPlayer ->
                 mBinding.exoPlayerView.player = exoPlayer
@@ -204,36 +217,8 @@ class PlayerActivity : AppCompatActivity() {
                     it.printStackTrace()
                     Pair(0, "${exoPlaybackException.errorCode}")
                 }
-
-                val dataSourceFactory: DataSource.Factory = DefaultDataSource.Factory(this)
-                // 这是媒体资源，代表要播放的媒体。
-                val videoSource: MediaSource =
-                    ProgressiveMediaSource.Factory(dataSourceFactory)
-                        .createMediaSource(fromUri(path))
-
-                // 开发者字幕资源的格式。
-//                val textFormat = Format.createTextSampleFormat(
-//                    null,
-//                    MimeTypes.APPLICATION_SUBRIP,
-//                    null,
-//                    Format.NO_VALUE,
-//                    Format.NO_VALUE,
-//                    Locale.getDefault().language,
-//                    null,
-//                    Format.OFFSET_SAMPLE_RELATIVE
-//                )
-                val url =
-                    "http://192.168.31.32:32400/library/streams/9091?X-Plex-Token=xMdhFuTH6wue8_2L_o6f"
-                val textMediaSource: MediaSource =
-                    SingleSampleMediaSource.Factory(dataSourceFactory)
-                        .createMediaSource(
-                            MediaItem.SubtitleConfiguration.Builder(Uri.parse(url))
-                                .setLanguage("zh")
-                                .setUri(Uri.parse(url))
-                                .setSelectionFlags(C.SELECTION_FLAG_FORCED)
-                                .build(),
-                            C.TIME_UNSET
-                        )
+                val videoSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(MediaItem.fromUri(path))
                 val mergingMediaSource = MergingMediaSource(videoSource)
                 exoPlayer.setMediaSource(mergingMediaSource)
                 exoPlayer.playWhenReady = playWhenReady
@@ -254,76 +239,22 @@ class PlayerActivity : AppCompatActivity() {
                             mBinding.playerParent.setDuration(exoPlayer.duration)
                         }
                     }
-
-                    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                        super.onPlayWhenReadyChanged(playWhenReady, reason)
-                    }
-
-                    override fun onTracksChanged(tracks: Tracks) {
-                        super.onTracksChanged(tracks)
-//                        val trackGroups = tracks.groups
-//                        var selectIndex = -1
-//                        var selectGroupIndex = -1
-//                        trackGroups.forEachIndexed { groupIndex, trackGroup ->
-//                            when (trackGroup.type) {
-//                                C.TRACK_TYPE_TEXT -> {
-//                                    Log.d(TAG, "onTracksChanged: ${trackGroup.length}")
-//                                    for (trackIndex in 0 until trackGroup.length) {
-//                                        if (!trackGroup.isTrackSupported(trackIndex)) {
-//                                            continue
-//                                        }
-//                                        val trackFormat = trackGroup.getTrackFormat(trackIndex)
-//                                        if (trackFormat.selectionFlags and C.SELECTION_FLAG_FORCED != 0) {
-//                                            continue
-//                                        }
-//                                        val language = trackFormat.language
-//                                        val label = trackFormat.label
-//                                        if (language == "zh") {
-//                                            selectIndex = trackIndex
-//                                            selectGroupIndex = groupIndex
-//                                            if (label != null) {
-//                                                val count = arrayOf(
-//                                                    "Simplified",
-//                                                    "CHS"
-//                                                ).count { label.contains(it, true) }
-//                                                if (count > 0) {
-//                                                    selectIndex = trackIndex
-//                                                    selectGroupIndex = groupIndex
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//
-//                                C.TRACK_TYPE_AUDIO -> {
-//                                    val trackFormat = trackGroup.getTrackSupport(0)
-//                                    val format = trackGroup.getTrackFormat(0)
-//                                    Log.d(
-//                                        TAG, "onTracksInfoChanged: ${
-//                                            Util.getPcmFormat(
-//                                                C.ENCODING_PCM_16BIT,
-//                                                format.channelCount,
-//                                                format.sampleRate
-//                                            )
-//                                        } ${format.cryptoType} ${trackGroup.length} ${format.sampleMimeType} $trackFormat $format"
-//                                    )
-//                                }
-//                            }
-//                        }
-
-//                        if (selectIndex != -1) {
-//                            val trackSelectionParameters =
-//                                player!!.trackSelectionParameters
-//                            player!!.trackSelectionParameters =
-//                                trackSelectionParameters
-//                                    .buildUpon()
-//                                    .setPreferredTextLanguages("zh-CN", "zh-HK", "zh-TW")
-//                                    .setPreferredAudioLanguages("en-US")
-//                                    .build()
-//                        }
-                    }
                 })
             }
+    }
+
+    private fun httpDataSource(context: Context): DefaultHttpDataSource {
+        val bandwidthMeter = DefaultBandwidthMeter.Builder(this).build()
+        val httpDataSource = DefaultHttpDataSource.Factory().apply {
+            setTransferListener(bandwidthMeter)
+            setUserAgent(
+                Util.getUserAgent(
+                    context,
+                    getString(com.skit.mplex.R.string.app_name)
+                )
+            )
+        }.createDataSource()
+        return httpDataSource
     }
 
     @SuppressLint("InlinedApi")

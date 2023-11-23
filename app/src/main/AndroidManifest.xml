@@ -23,16 +23,24 @@
         android:theme="@style/Theme.MPlex"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".TestActivity"
-            android:exported="true">
+        <activity-alias
+            android:name=".LaunchActivity"
+            android:exported="true"
+            android:targetActivity=".TestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+
+        <activity
+            android:name=".TestActivity"
+            android:screenOrientation="landscape" />
+
+        <activity android:name=".MainActivity" />
+
         <activity
             android:name="com.skit.mplex.ui.play.PlayerActivity"
             android:screenOrientation="sensorLandscape" />

@@ -43,6 +43,9 @@ dependencies {
     implementation fileTree(dir: "libs", includes: ["*.jar", "*.aar"])
     implementation project(':toolkit')
 
+    //是否需要ExoPlayer模式
+//    implementation 'com.github.CarGuo.GSYVideoPlayer:GSYVideoPlayer-exo2:v8.5.0-release-jitpack'
+
     implementation 'androidx.palette:palette-ktx:1.0.0'
 
     implementation 'androidx.core:core-ktx:1.8.0'

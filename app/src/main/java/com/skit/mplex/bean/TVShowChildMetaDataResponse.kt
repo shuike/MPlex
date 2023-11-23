@@ -210,6 +210,10 @@ data class TVShowChildMetaDataResponse(
                         val chromaSubsampling: String, // 4:2:0
                         @SerializedName("codec")
                         val codec: String, // hevc
+                        @SerializedName("format")
+                        val format: String?, // ass
+                        @SerializedName("key")
+                        val key: String?, // /library/streams/5097
                         @SerializedName("codedHeight")
                         val codedHeight: Int, // 2160
                         @SerializedName("codedWidth")
