@@ -20,6 +20,7 @@ import com.skit.mplex.ktx.loadPlexImg
 import com.skit.mplex.ktx.toAlphaColor
 import com.skit.mplex.net.HttpFactory
 import com.skit.mplex.net.plexUrl
+import com.skit.mplex.net.plexUrlAddToken
 import com.skit.mplex.server.PlexLocalApi
 import com.skit.mplex.ui.play.PlayerActivity
 import kotlinx.coroutines.launch
@@ -117,7 +118,7 @@ class TVShowDetailsFragment : BaseFragment<FragmentTvShowDetailsBinding>() {
     private fun loadArtImage(artPath: String) {
         mBinding.ivBg.apply {
             if (tag != artPath) {
-                load(artPath.plexUrl()) {
+                load(artPath.plexUrlAddToken()) {
                     allowHardware(false)
                     listener(
                         onSuccess = { _, result ->
