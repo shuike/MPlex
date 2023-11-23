@@ -20,10 +20,8 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.fromUri
 import androidx.media3.common.Player
-import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
@@ -242,6 +240,13 @@ class PlayerActivity : AppCompatActivity() {
                 exoPlayer.seekTo(currentItem, playbackPosition)
                 exoPlayer.prepare()
                 exoPlayer.playWhenReady = true
+
+                val trackSelectionParameters = exoPlayer.trackSelectionParameters
+                exoPlayer.trackSelectionParameters = trackSelectionParameters
+                    .buildUpon()
+                    .setPreferredTextLanguages("zh-CN", "zh-HK", "zh-TW")
+                    .setPreferredAudioLanguages("en-US")
+                    .build()
                 exoPlayer.addListener(object : Player.Listener {
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         super.onPlaybackStateChanged(playbackState)
@@ -256,74 +261,66 @@ class PlayerActivity : AppCompatActivity() {
 
                     override fun onTracksChanged(tracks: Tracks) {
                         super.onTracksChanged(tracks)
-                        val trackGroups = tracks.groups
-                        var selectIndex = -1
-                        var selectGroupIndex = -1
-                        trackGroups.forEachIndexed { groupIndex, trackGroup ->
-                            when (trackGroup.type) {
-                                C.TRACK_TYPE_TEXT -> {
-                                    Log.d(TAG, "onTracksChanged: ${trackGroup.length}")
-                                    for (trackIndex in 0 until trackGroup.length) {
-                                        if (!trackGroup.isTrackSupported(trackIndex)) {
-                                            continue
-                                        }
-                                        val trackFormat = trackGroup.getTrackFormat(trackIndex)
-                                        if (trackFormat.selectionFlags and C.SELECTION_FLAG_FORCED != 0) {
-                                            continue
-                                        }
-                                        val language = trackFormat.language
-                                        val label = trackFormat.label
-                                        if (language == "zh") {
-                                            selectIndex = trackIndex
-                                            selectGroupIndex = groupIndex
-                                            if (label != null) {
-                                                val count = arrayOf(
-                                                    "Simplified",
-                                                    "CHS"
-                                                ).count { label.contains(it, true) }
-                                                if (count > 0) {
-                                                    selectIndex = trackIndex
-                                                    selectGroupIndex = groupIndex
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+//                        val trackGroups = tracks.groups
+//                        var selectIndex = -1
+//                        var selectGroupIndex = -1
+//                        trackGroups.forEachIndexed { groupIndex, trackGroup ->
+//                            when (trackGroup.type) {
+//                                C.TRACK_TYPE_TEXT -> {
+//                                    Log.d(TAG, "onTracksChanged: ${trackGroup.length}")
+//                                    for (trackIndex in 0 until trackGroup.length) {
+//                                        if (!trackGroup.isTrackSupported(trackIndex)) {
+//                                            continue
+//                                        }
+//                                        val trackFormat = trackGroup.getTrackFormat(trackIndex)
+//                                        if (trackFormat.selectionFlags and C.SELECTION_FLAG_FORCED != 0) {
+//                                            continue
+//                                        }
+//                                        val language = trackFormat.language
+//                                        val label = trackFormat.label
+//                                        if (language == "zh") {
+//                                            selectIndex = trackIndex
+//                                            selectGroupIndex = groupIndex
+//                                            if (label != null) {
+//                                                val count = arrayOf(
+//                                                    "Simplified",
+//                                                    "CHS"
+//                                                ).count { label.contains(it, true) }
+//                                                if (count > 0) {
+//                                                    selectIndex = trackIndex
+//                                                    selectGroupIndex = groupIndex
+//                                                }
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//
+//                                C.TRACK_TYPE_AUDIO -> {
+//                                    val trackFormat = trackGroup.getTrackSupport(0)
+//                                    val format = trackGroup.getTrackFormat(0)
+//                                    Log.d(
+//                                        TAG, "onTracksInfoChanged: ${
+//                                            Util.getPcmFormat(
+//                                                C.ENCODING_PCM_16BIT,
+//                                                format.channelCount,
+//                                                format.sampleRate
+//                                            )
+//                                        } ${format.cryptoType} ${trackGroup.length} ${format.sampleMimeType} $trackFormat $format"
+//                                    )
+//                                }
+//                            }
+//                        }
 
-                                C.TRACK_TYPE_AUDIO -> {
-                                    val trackFormat = trackGroup.getTrackSupport(0)
-                                    val format = trackGroup.getTrackFormat(0)
-                                    Log.d(
-                                        TAG, "onTracksInfoChanged: ${
-                                            Util.getPcmFormat(
-                                                C.ENCODING_PCM_16BIT,
-                                                format.channelCount,
-                                                format.sampleRate
-                                            )
-                                        } ${format.cryptoType} ${trackGroup.length} ${format.sampleMimeType} $trackFormat $format"
-                                    )
-                                }
-                            }
-                        }
-
-                        if (selectIndex != -1) {
-                            val trackSelectionParameters =
-                                player!!.trackSelectionParameters
-                            player!!.trackSelectionParameters =
-                                trackSelectionParameters
-                                    .buildUpon()
-                                    .setOverrideForType(
-                                        TrackSelectionOverride(
-                                            trackGroups[selectGroupIndex].mediaTrackGroup,
-                                            selectIndex
-                                        )
-                                    )
-                                    .setTrackTypeDisabled(
-                                        C.TRACK_TYPE_TEXT,  /* disabled= */
-                                        false
-                                    )
-                                    .build()
-                        }
+//                        if (selectIndex != -1) {
+//                            val trackSelectionParameters =
+//                                player!!.trackSelectionParameters
+//                            player!!.trackSelectionParameters =
+//                                trackSelectionParameters
+//                                    .buildUpon()
+//                                    .setPreferredTextLanguages("zh-CN", "zh-HK", "zh-TW")
+//                                    .setPreferredAudioLanguages("en-US")
+//                                    .build()
+//                        }
                     }
                 })
             }

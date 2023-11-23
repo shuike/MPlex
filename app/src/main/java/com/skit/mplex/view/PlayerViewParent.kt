@@ -68,8 +68,10 @@ class PlayerViewParent @JvmOverloads constructor(
     }
 
     fun setDuration(duration: Long) {
-        this.duration = duration
-        step = duration / measuredWidth
+        post {
+            this.duration = duration
+            step = duration / measuredWidth
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -244,7 +246,6 @@ class PlayerViewParent @JvmOverloads constructor(
         }
         return true
     }
-
 
     override fun onFinishInflate() {
         super.onFinishInflate()
