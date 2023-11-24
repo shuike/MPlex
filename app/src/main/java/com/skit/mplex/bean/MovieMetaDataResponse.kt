@@ -3,13 +3,14 @@ package com.skit.mplex.bean
 import androidx.annotation.Keep
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 @Keep
 data class MovieMetaDataResponse(
     @SerializedName("MediaContainer")
     val mediaContainer: MediaContainer,
-) {
+) : Serializable {
     @Keep
     data class MediaContainer(
         @SerializedName("allowSync")
@@ -32,7 +33,7 @@ data class MovieMetaDataResponse(
         val metadata: List<Metadata>,
         @SerializedName("size")
         val size: Int, // 1
-    ) {
+    ) : Serializable {
         @Keep
         data class Metadata(
             @SerializedName("addedAt")
@@ -115,7 +116,7 @@ data class MovieMetaDataResponse(
             val writer: List<Writer>,
             @SerializedName("year")
             val year: Int, // 2023
-        ) {
+        ) : Serializable {
             @Keep
             data class Chapter(
                 @SerializedName("endTimeOffset")
@@ -182,7 +183,7 @@ data class MovieMetaDataResponse(
                 val audioChannels: Int, // 6
                 @SerializedName("audioCodec")
                 val audioCodec: String, // eac3
-                @SerializedName("bitrate")                val bitrate: Int, // 21196
+                @SerializedName("bitrate") val bitrate: Int, // 21196
                 @SerializedName("container")
                 val container: String, // mkv
                 @SerializedName("duration")
@@ -203,7 +204,7 @@ data class MovieMetaDataResponse(
                 val videoResolution: String, // 4k
                 @SerializedName("width")
                 val width: Int, // 3840
-            ) {
+            ) : Serializable {
                 @Keep
                 data class Part(
                     @SerializedName("container")
@@ -222,7 +223,7 @@ data class MovieMetaDataResponse(
                     val stream: List<Stream>,
                     @SerializedName("videoProfile")
                     val videoProfile: String, // main 10
-                ) {
+                ) : Serializable {
                     @Keep
                     data class Stream(
                         @SerializedName("audioChannelLayout")
@@ -270,17 +271,19 @@ data class MovieMetaDataResponse(
                         @SerializedName("index")
                         val index: Int, // 0
                         @SerializedName("language")
-                        val language: String, // English
+                        val language: String?, // English
                         @SerializedName("languageCode")
-                        val languageCode: String, // eng
+                        val languageCode: String?, // eng
                         @SerializedName("languageTag")
-                        val languageTag: String, // en
+                        val languageTag: String?, // en
                         @SerializedName("level")
                         val level: Int, // 150
                         @SerializedName("original")
                         val original: Boolean, // true
                         @SerializedName("profile")
                         val profile: String, // main 10
+                        @SerializedName("key")
+                        val key: String?, // main 10
                         @SerializedName("refFrames")
                         val refFrames: Int, // 1
                         @SerializedName("samplingRate")
@@ -301,7 +304,7 @@ data class MovieMetaDataResponse(
             data class Preferences(
                 @SerializedName("Setting")
                 val setting: List<Setting>,
-            ) {
+            ) : Serializable {
                 @Keep
                 data class Setting(
                     @SerializedName("advanced")

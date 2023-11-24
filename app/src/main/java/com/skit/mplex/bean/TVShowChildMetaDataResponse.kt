@@ -1,15 +1,15 @@
 package com.skit.mplex.bean
 
 import androidx.annotation.Keep
-
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 @Keep
 data class TVShowChildMetaDataResponse(
     @SerializedName("MediaContainer")
     val mediaContainer: MediaContainer
-) {
+) : Serializable {
     @Keep
     data class MediaContainer(
         @SerializedName("allowSync")
@@ -32,7 +32,7 @@ data class TVShowChildMetaDataResponse(
         val metadata: List<Metadata>,
         @SerializedName("size")
         val size: Int // 1
-    ) {
+    ) : Serializable {
         @Keep
         data class Metadata(
             @SerializedName("addedAt")
@@ -121,7 +121,7 @@ data class TVShowChildMetaDataResponse(
             val writer: List<Writer>,
             @SerializedName("year")
             val year: Int // 2021
-        ) {
+        ) : Serializable {
             @Keep
             data class Director(
                 @SerializedName("filter")
@@ -174,7 +174,7 @@ data class TVShowChildMetaDataResponse(
                 val videoResolution: String, // 4k
                 @SerializedName("width")
                 val width: Int // 3840
-            ) {
+            ) : Serializable {
                 @Keep
                 data class Part(
                     @SerializedName("container")
@@ -193,7 +193,7 @@ data class TVShowChildMetaDataResponse(
                     val stream: List<Stream>,
                     @SerializedName("videoProfile")
                     val videoProfile: String // main 10
-                ) {
+                ) : Serializable {
                     @Keep
                     data class Stream(
                         @SerializedName("audioChannelLayout")
@@ -241,11 +241,11 @@ data class TVShowChildMetaDataResponse(
                         @SerializedName("index")
                         val index: Int, // 0
                         @SerializedName("language")
-                        val language: String, // English
+                        val language: String?, // English
                         @SerializedName("languageCode")
-                        val languageCode: String, // eng
+                        val languageCode: String?, // eng
                         @SerializedName("languageTag")
-                        val languageTag: String, // en
+                        val languageTag: String?, // en
                         @SerializedName("level")
                         val level: Int, // 150
                         @SerializedName("profile")

@@ -17,7 +17,6 @@ import com.skit.mplex.databinding.FragmentMovieDetailsBinding
 import com.skit.mplex.ktx.loadPlexImg
 import com.skit.mplex.ktx.toAlphaColor
 import com.skit.mplex.net.HttpFactory
-import com.skit.mplex.net.plexUrl
 import com.skit.mplex.net.plexUrlAddToken
 import com.skit.mplex.server.PlexLocalApi
 import com.skit.mplex.ui.play.PlayerActivity
@@ -67,7 +66,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                 mBinding.btPlay.setOnClickListener {
                     PlayerActivity.launch(
                         requireActivity(),
-                        metadata.media[0].part[0].key.plexUrl()
+                        metadata
                     )
                 }
             }

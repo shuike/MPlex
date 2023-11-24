@@ -64,31 +64,36 @@
             android:layout_gravity="center_vertical|end"
             android:layoutDirection="ltr">
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_vr"
                 style="@style/ExoStyledControls.Button.Bottom.VR" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_shuffle"
                 style="@style/ExoStyledControls.Button.Bottom.Shuffle" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_repeat_toggle"
                 style="@style/ExoStyledControls.Button.Bottom.RepeatToggle" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/mplex_exo_subtitle"
+                style="@style/ExoStyledControls.Button.Bottom.CC"
+                android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_subtitle"
                 style="@style/ExoStyledControls.Button.Bottom.CC" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_settings"
                 style="@style/ExoStyledControls.Button.Bottom.Settings" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_fullscreen"
                 style="@style/ExoStyledControls.Button.Bottom.FullScreen" />
 
-            <ImageButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_overflow_show"
                 style="@style/ExoStyledControls.Button.Bottom.OverflowShow" />
 
@@ -107,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:layoutDirection="ltr">
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@id/exo_overflow_hide"
                     style="@style/ExoStyledControls.Button.Bottom.OverflowHide" />
 
@@ -134,7 +139,7 @@
         android:layoutDirection="ltr"
         android:orientation="horizontal">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@id/exo_minimal_fullscreen"
             style="@style/ExoStyledControls.Button.Bottom.FullScreen" />
 
@@ -150,19 +155,19 @@
         android:gravity="center"
         android:padding="@dimen/exo_styled_controls_padding">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@id/exo_prev"
             style="@style/ExoStyledControls.Button.Center.Previous" />
 
         <include layout="@layout/exo_player_control_rewind_button" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@id/exo_play_pause"
             style="@style/ExoStyledControls.Button.Center.PlayPause" />
 
         <include layout="@layout/exo_player_control_ffwd_button" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@id/exo_next"
             style="@style/ExoStyledControls.Button.Center.Next" />
 

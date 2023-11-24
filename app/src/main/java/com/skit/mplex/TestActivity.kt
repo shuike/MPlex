@@ -1,5 +1,6 @@
 package com.skit.mplex
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -7,23 +8,22 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.C
-import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaItem.SubtitleConfiguration
-import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
-import androidx.media3.common.TrackSelectionOverride
 import androidx.media3.common.Tracks
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DataSource
-import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.DefaultRenderersFactory
@@ -39,7 +39,6 @@ import androidx.media3.exoplayer.source.MediaLoadData
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import androidx.media3.exoplayer.source.SingleSampleMediaSource
 import androidx.media3.exoplayer.trackselection.AdaptiveTrackSelection
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
@@ -49,24 +48,32 @@ import com.skit.mplex.net.HttpFactory
 import com.skit.mplex.net.plexUrl
 import com.skit.mplex.net.plexUrlAddToken
 import com.skit.mplex.server.PlexLocalApi
-import com.skit.mplex.utils.SubsUtils
+import com.skit.mplex.subtitles.SubtitlesData
+import com.skit.mplex.subtitles.SubtitlesSelectManager
+import com.skit.mplex.subtitles.SubtitlesUtils
+import com.skit.mplex.view.subtitles.SubtitlesSelector
 import kotlinx.coroutines.launch
-import java.io.File
 import java.util.LinkedList
 
 
 @OptIn(UnstableApi::class)
 
 class TestActivity : AppCompatActivity() {
+
     private val TAG = "TestActivity"
-    private lateinit var dataSourceFactory: DataSource.Factory
-    private lateinit var httpDataSource: DefaultHttpDataSource
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var binding: ActivityTestBinding
     private lateinit var trackSelector: DefaultTrackSelector
-    private val subtitles = LinkedList<Triple<String, String, String>>()
+    private lateinit var dataSourceFactory: DataSource.Factory
+    private lateinit var httpDataSource: DefaultHttpDataSource
+
+    private val allSubTitles = LinkedList<SubtitlesData>()
+    private val remoteSubtitles = LinkedList<SubtitlesData.Remote>()
+    private val subtitlesSelectManager = SubtitlesSelectManager()
+    private val subtitlesSelector = SubtitlesSelector(subtitlesSelectManager)
 
     private val plexLocalApi: PlexLocalApi by lazy { HttpFactory.localRetrofit.create(PlexLocalApi::class.java) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTestBinding.inflate(layoutInflater)
@@ -90,7 +97,7 @@ class TestActivity : AppCompatActivity() {
 
         initExoPlayer()
         lifecycleScope.launch {
-            val tvShowChildMetaData = plexLocalApi.getTvShowChildMetaData("682")
+            val tvShowChildMetaData = plexLocalApi.getMovieMetaData("241")
             val metadata = tvShowChildMetaData.mediaContainer.metadata[0]
             val media = metadata.media[0]
             val part = media.part[0]
@@ -98,12 +105,34 @@ class TestActivity : AppCompatActivity() {
             stream.filter { it.streamType == 3 }.forEach {
                 val streamType = it.streamType // 1:视频 2:音频 3:字幕
                 if (it.key != null) {
-                    subtitles.add(Triple(it.codec, it.languageTag, it.key.plexUrlAddToken()))
+                    remoteSubtitles.add(
+                        SubtitlesData.Remote(
+                            it.id.toString(),
+                            it.codec,
+                            it.languageTag ?: "",
+                            it.displayTitle,
+                            it.key.plexUrlAddToken()
+                        )
+                    )
+                    allSubTitles.addAll(remoteSubtitles)
                 }
-//                binding.text.append("${it.id} ${it.codec} ${it.default} ${it.selected} ${it.languageTag} ${it.displayTitle} ${it.key}\n\n")
             }
             val plexUrl = part.key.plexUrl()
             play(plexUrl)
+        }
+        findViewById<View>(R.id.mplex_exo_subtitle).setOnClickListener {
+            subtitlesSelector.show(
+                this,
+                allSubTitles
+            )
+        }
+        subtitlesSelector.onSelect = {
+            subtitlesSelectManager.selectSubtitles(
+                trackSelector,
+                it,
+                playerSubtitles
+            )
+            subtitlesSelector.hide()
         }
 //        val videoPath = "https://www.runoob.com/try/demo_source/movie.mp4"
 //        play(videoPath)
@@ -128,24 +157,19 @@ class TestActivity : AppCompatActivity() {
 
     private fun play(videoPath: String) {
         Log.d(TAG, "play: ${videoPath}")
-//        val defaultExtractorsFactory = DefaultExtractorsFactory()
         val videoSource: MediaSource =
             ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(MediaItem.fromUri(videoPath))
-        val map = subtitles.mapIndexed { index, triple ->
-            getTextSource("r_${index}", Uri.parse(triple.third), triple.first, triple.second)
+        val map = remoteSubtitles.mapIndexed { index, remote ->
+            SubtitlesUtils.getTextMediaSource(
+                remote.id,
+                Uri.parse(remote.url),
+                remote.codec,
+                remote.language
+            )
         }.toTypedArray()
         val mergingMediaSource = MergingMediaSource(videoSource, *map)
         exoPlayer.setMediaSource(mergingMediaSource)
-//        MergingMediaSource(
-//            videoSource,
-//            //                getTextSource(getStrUrl("srt2.srt"), "zh-CN"),
-//            getTextSource(getStrUrl("srt2.srt"), "srt", "zh-CN"),
-//            //                getTextSource(getStrUrl("srt2.srt"), "zh"),
-//            //                getTextSource(getStrUrl("srt2.srt"), "en"),
-//            //                getTextSource(getStrUrl("srt2.srt"), "en-US"),
-//            getTextSource(getStrUrl("ass.ass"), "ass", "zh-CN"),
-//        )
 
         exoPlayer.addListener(object : Player.Listener {
             override fun onIsLoadingChanged(isLoading: Boolean) {
@@ -195,53 +219,61 @@ class TestActivity : AppCompatActivity() {
 
     }
 
-    private val playerSubTitles = mutableListOf<Tracks.Group>()
+    private val playerSubtitles = mutableListOf<Tracks.Group>()
     fun prepareSubTitles(exoPlayer: ExoPlayer) {
-        playerSubTitles.clear()
+        playerSubtitles.clear()
 
         binding.text.text = ""
         val currentTracks = exoPlayer.currentTracks
         val groups = currentTracks.groups
         val groupList = mutableListOf<Tracks.Group>()
-        groups.forEachIndexed { index, it ->
-            if (it.type == C.TRACK_TYPE_TEXT) { // 获取字幕轨道
-                groupList.add(it)
-                playerSubTitles.add(it)
+        groups.forEachIndexed { index, group ->
+            if (group.type == C.TRACK_TYPE_TEXT) { // 获取字幕轨道
+                groupList.add(group)
+                playerSubtitles.add(group)
+                val trackFormat = group.getTrackFormat(0)
+                val id = trackFormat.id
+                if (!id.isNullOrEmpty()) {
+                    var find = allSubTitles.find { it is SubtitlesData.Remote && it.id == id }
+                    if (find == null) {
+                        find = allSubTitles.find { it is SubtitlesData.Inner && it.id == id }
+                    }
+                    if (find == null) {
+                        var name = SubtitlesUtils.getName(trackFormat)
+                        if (trackFormat.label != null) {
+                            name += "-${trackFormat.label}"
+                        }
+                        allSubTitles.add(
+                            SubtitlesData.Inner(
+                                id,
+                                trackFormat.language ?: "",
+                                name
+                            )
+                        )
+                    }
+                }
             }
         }
         groupList.forEach {
             val mediaTrackGroup = it.mediaTrackGroup
             val format = mediaTrackGroup.getFormat(0)
-            val title = SubsUtils.getName(format)
+            val title = SubtitlesUtils.getName(format)
             binding.text.append(
                 title + " ${format.id} " + format.toString() + " ${mediaTrackGroup.length} \n"
             )
-            if (format.id == "r_0") {
+        }
+
+        if (subtitlesSelectManager.selectedId.isEmpty()) {
+            val find = remoteSubtitles.find { it.selected }
+            if (find != null) {
+                subtitlesSelectManager.selectSubtitles(trackSelector, find, playerSubtitles)
+            } else {
                 trackSelector.setParameters(
                     trackSelector.parameters.buildUpon()
-                        .setPreferredTextLanguage(format.language)
-                        .setOverrideForType(
-                            TrackSelectionOverride(
-                                mediaTrackGroup, 0
-                            )
-                        )
-                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, /* disabled= */ false)
+                        .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 )
             }
         }
-    }
-
-    private fun getStrUrl(s: String): Uri {
-        val open = assets.open(s)
-        val externalFilesDir = filesDir
-        //        externalFilesDir.exists()
-        val file = File(externalFilesDir, s)
-        val outputStream = file.outputStream()
-        open.copyTo(outputStream)
-        outputStream.flush()
-        outputStream.close()
-        val srtUrl = Uri.fromFile(file)
-        return srtUrl
     }
 
     private fun createHttpDataSource(): DefaultHttpDataSource {
@@ -284,58 +316,19 @@ class TestActivity : AppCompatActivity() {
 
     }
 
-    private fun getTextSource(
-        id: String,
-        subTitleUri: Uri,
-        typeStr: String,
-        language: String,
-        factory: DataSource.Factory = DefaultHttpDataSource.Factory()
-    ): MediaSource {
-        Log.d("TAG", "getTextSource: ${subTitleUri}")
-        val str = subTitleUri.toString()
-        val type = when (typeStr) {
-            "srt" -> {
-                MimeTypes.APPLICATION_SUBRIP
-            }
-
-            "ass" -> {
-                MimeTypes.TEXT_SSA
-            }
-
-            "ttml" -> {
-                MimeTypes.APPLICATION_TTML
-            }
-
-            else -> {
-                MimeTypes.TEXT_UNKNOWN
-            }
-        }
-        val context = this
-        val textFormat =
-            Format.Builder() /// 其他的比如 text/x-ssa ，text/vtt，application/ttml+xml 等等
-                .setSampleMimeType(type)
-                .setSelectionFlags(C.SELECTION_FLAG_FORCED)
-                /// 如果出现字幕不显示，可以通过修改这个语音去对应，
-                //  这个问题在内部的 selectTextTrack 时，TextTrackScore 通过 getFormatLanguageScore 方法判断语言获取匹配不上
-                //  就会不出现字幕
-                .setLanguage(language)
-                .build()
-        val subtitle = SubtitleConfiguration.Builder(subTitleUri)
-            .setMimeType(checkNotNull(textFormat.sampleMimeType))
-            .setId(id)
-            .setMimeType(type)
-            .setLanguage(textFormat.language)
-            .setSelectionFlags(textFormat.selectionFlags).build()
-//        val factory = DefaultHttpDataSource.Factory()
-//            .setAllowCrossProtocolRedirects(true)
-//            .setConnectTimeoutMs(50000)
-//            .setReadTimeoutMs(50000)
-//            .setTransferListener(DefaultBandwidthMeter.Builder(context).build())
-        return SingleSampleMediaSource.Factory(
-            DefaultDataSource.Factory(
-                context,
-                factory
-            )
-        ).createMediaSource(subtitle, C.TIME_UNSET)
+    override fun onResume() {
+        super.onResume()
+        hideSystemUi()
     }
+
+    @SuppressLint("InlinedApi")
+    private fun hideSystemUi() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, binding.exoPlayerView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
 }
